@@ -26,16 +26,16 @@ fn (r Registers) stringify(reg_order string) string {
 	for val in reg_order {
 		match val {
 			`a` {
-				str += u32_to_bytes(r.eax).bytestr()
+				str += u32_to_bytes(r.eax).reverse().bytestr()
 			}
 			`b` {
-				str += u32_to_bytes(r.ebx).bytestr()
+				str += u32_to_bytes(r.ebx).reverse().bytestr()
 			}
 			`c` {
-				str += u32_to_bytes(r.ecx).bytestr()
+				str += u32_to_bytes(r.ecx).reverse().bytestr()
 			}
 			`d` {
-				str += u32_to_bytes(r.edx).bytestr()
+				str += u32_to_bytes(r.edx).reverse().bytestr()
 			}
 			else {
 				println('Error: "${reg_order}" is an invalid string. It must only contain a, b, c, or d.')
@@ -61,16 +61,16 @@ fn (r Registers) stringify_opt(reg_order string) !string {
 
 		match val {
 			`a` {
-				str += u32_to_bytes(r.eax).bytestr()
+				str += u32_to_bytes(r.eax).reverse().bytestr()
 			}
 			`b` {
-				str += u32_to_bytes(r.ebx).bytestr()
+				str += u32_to_bytes(r.ebx).reverse().bytestr()
 			}
 			`c` {
-				str += u32_to_bytes(r.ecx).bytestr()
+				str += u32_to_bytes(r.ecx).reverse().bytestr()
 			}
 			`d` {
-				str += u32_to_bytes(r.edx).bytestr()
+				str += u32_to_bytes(r.edx).reverse().bytestr()
 			}
 			else {
 				return error('"${reg_order}" is an invalid string. It must only contain a, b, c, or d.')
@@ -87,5 +87,20 @@ fn u32_to_bytes(x u32) []u8 {
 		bytes << u8((x >> i) & 0xff)
 	}
 	bytes << u8(x & 0xff)
-	return bytes.reverse()
+	return bytes //.reverse()
+}
+
+// u32_to_bits converts the values of each bit to an integer.
+fn u32_to_bits(x u32) []bool {
+	mut bits := []bool{cap: 32}
+	for pos in 0 .. 32 {
+		bits << if get_bits(x, pos, 1) == 1 { true } else { false }
+	}
+	return bits
+}
+
+// get_bits returns the value beginning at `pos` to `amount`. Least significant bit.
+[inline]
+fn get_bits(src u32, pos int, amount int) int {
+	return int(((1 << amount) - 1) & (src >> pos))
 }
