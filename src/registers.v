@@ -1,5 +1,7 @@
 module cpuid
 
+import strings
+
 struct Registers {
 pub mut:
 	eax u32
@@ -25,21 +27,11 @@ fn (r Registers) stringify(reg_order string) string {
 	}
 	for val in reg_order {
 		match val {
-			`a` {
-				str += u32_to_bytes(r.eax).reverse().bytestr()
-			}
-			`b` {
-				str += u32_to_bytes(r.ebx).reverse().bytestr()
-			}
-			`c` {
-				str += u32_to_bytes(r.ecx).reverse().bytestr()
-			}
-			`d` {
-				str += u32_to_bytes(r.edx).reverse().bytestr()
-			}
-			else {
-				println('Error: "${reg_order}" is an invalid string. It must only contain a, b, c, or d.')
-			}
+			`a` { str += u32_to_bytes(r.eax).reverse().bytestr() }
+			`b` { str += u32_to_bytes(r.ebx).reverse().bytestr() }
+			`c` { str += u32_to_bytes(r.ecx).reverse().bytestr() }
+			`d` { str += u32_to_bytes(r.edx).reverse().bytestr() }
+			else { println('Error: "${reg_order}" is an invalid string. It must only contain a, b, c, or d.') }
 		}
 	}
 	return str
@@ -60,21 +52,11 @@ fn (r Registers) stringify_opt(reg_order string) !string {
 		dupl_checker << val
 
 		match val {
-			`a` {
-				str += u32_to_bytes(r.eax).reverse().bytestr()
-			}
-			`b` {
-				str += u32_to_bytes(r.ebx).reverse().bytestr()
-			}
-			`c` {
-				str += u32_to_bytes(r.ecx).reverse().bytestr()
-			}
-			`d` {
-				str += u32_to_bytes(r.edx).reverse().bytestr()
-			}
-			else {
-				return error('"${reg_order}" is an invalid string. It must only contain a, b, c, or d.')
-			}
+			`a` { str += u32_to_bytes(r.eax).reverse().bytestr() }
+			`b` { str += u32_to_bytes(r.ebx).reverse().bytestr() }
+			`c` { str += u32_to_bytes(r.ecx).reverse().bytestr() }
+			`d` { str += u32_to_bytes(r.edx).reverse().bytestr() }
+			else { return error('"${reg_order}" is an invalid string. It must only contain a, b, c, or d.') }
 		}
 	}
 	return str
@@ -103,4 +85,16 @@ fn u32_to_bits(x u32) []bool {
 [inline]
 fn get_bits(src u32, pos int, amount int) int {
 	return int(((1 << amount) - 1) & (src >> pos))
+}
+
+fn print_bits(x u32) {
+	mut bldr := strings.new_builder(36)
+	bits := u32_to_bits(x)
+	for i, bit in bits {
+		if i % 8 == 0 && i != 0 {
+			bldr.write_string(' ')
+		}
+		bldr.write_string(if bit { '1' } else { '0' })
+	}
+	println(bldr.str())
 }

@@ -2,7 +2,7 @@ module cpuid
 
 import strings
 
-pub const cpu_info = cpu()
+pub const info = cpu()
 
 // Vendor is a representation of a CPU vendor.
 pub enum Vendor {
@@ -122,6 +122,8 @@ pub enum ProcessorType {
 
 // CPUInfo contains information about the detected system CPU.
 struct CPUInfo {
+mut:
+	max_eax_val int
 pub mut:
 	manufacturer_id  string    // manufacturer id provided by the CPU
 	brand_name       string    // brand name generated from CPU manufacturer ID
@@ -133,32 +135,25 @@ pub mut:
 	family           int       // CPU family number
 	model            int       // CPU model number
 	stepping         int       // CPU stepping info
-	cache_line       int       // Cache line size in bytes. Will be 0 if undetectable.
 	processor_type   ProcessorType
 	freqency         i64 // Clock speed, if known, 0 otherwise. Will attempt to contain base clock speed.
 	boost_frequency  i64 // Max clock speed, if known, 0 otherwise.
-	cache            struct {
-	pub mut:
-		l1i int = -1 // L1 Instruction Cache (per core or shared). Will be -1 if undetectable.
-		l1d int = -1 // L1 Data Cache (per core or shared). Will be -1 if undetectable.
-		l2  int = -1 // L2 Cache (per core or shared). Will be -1 if undetectable.
-		l3  int = -1 // L3 Cache (per core or shared). Will be -1 if undetectable.
-	}
-
-	max_fn    u32
-	max_ex_fn u32
+	caches           []Cache
 }
 
 // cpu will detect current CPU info and return it.
 pub fn cpu() CPUInfo {
 	mut cpu := CPUInfo{}
-	vendor(mut cpu)
-	processor_info_and_feature_bits(mut cpu)
+	leaf0(mut cpu)
+	leaf1(mut cpu)
+	leaf2(mut cpu)
+	// leaf3 gets processor serial number. This is not used on modern CPUs
+	leaf4(mut cpu)
 	return cpu
 }
 
-// vendor sets the CPU brand name and Vendor
-fn vendor(mut cpu CPUInfo) {
+// leaf0 sets the CPU brand name and Vendor
+fn leaf0(mut cpu CPUInfo) {
 	mut vendor_bldr := strings.new_builder(12)
 	regs := asm_cpuid(eax: 0)
 	vendor_bldr.write_string(regs.stringify('b'))
@@ -189,10 +184,16 @@ fn vendor(mut cpu CPUInfo) {
 		'XenVMMXenVMM' { 'Xen', Vendor.xenhvm }
 		else { '<unknown>', Vendor.unknown }
 	}
+
+	cpu.max_eax_val = int(regs.eax)
 }
 
-// processor_info_and_feature_bits sets processor info and feature bits
-fn processor_info_and_feature_bits(mut cpu CPUInfo) {
+// leaf1 sets processor info and features
+fn leaf1(mut cpu CPUInfo) {
+	if cpu.max_eax_val < 1 {
+		return
+	}
+
 	regs := asm_cpuid(eax: 1)
 	// EAX - Processor Version Information
 	{
@@ -227,6 +228,8 @@ fn processor_info_and_feature_bits(mut cpu CPUInfo) {
 	{
 		db := u32_to_bits(regs.edx)
 		cb := u32_to_bits(regs.ecx)
+		// Adam says: this is absolutely stupid, but I'm not seeing a proper way to put this in a loop
+		// withouth also making multiple enums which is also stupid.
 		// vfmt off
 		if db[0] { cpu.features << .fpu }
 		if db[1] { cpu.features << .vme }
@@ -294,11 +297,77 @@ fn processor_info_and_feature_bits(mut cpu CPUInfo) {
 	}
 	// EBX - Additional Information
 	{
-		ebx_bytes := u32_to_bytes(regs.ebx)
-		brand_index := ebx_bytes[0]
-		clflush_line_size := ebx_bytes[1]
-		max_addresses := ebx_bytes[2]
-		local_apic_id := ebx_bytes[3]
-		println(brand_index)
+		// cache line size can now be accessed by CPUInfo.caches[0].line_size
+		// ebx_bytes := u32_to_bytes(regs.ebx)
+		// cpu.cache.line_size = ebx_bytes[1]
+	}
+}
+
+// leaf2 sets some CPU cache/TLB information
+fn leaf2(mut cpu CPUInfo) {
+	if cpu.vendor != .intel {
+		return
+	}
+	if cpu.max_eax_val < 2 {
+		return
+	}
+
+	regs := asm_cpuid(eax: 2)
+	// pretty sure this should be used for older intel CPUs only
+}
+
+// leaf4 sets CPU cache information
+fn leaf4(mut cpu CPUInfo) {
+	if cpu.vendor != .intel {
+		return
+	}
+	if cpu.max_eax_val < 4 {
+		return
+	}
+
+	mut cache_id := u32(0)
+	for {
+		regs := asm_cpuid(eax: 4, ecx: cache_id)
+		cache_id++
+		cache_type_u32 := regs.eax & 0xf
+		if cache_type_u32 == 0 {
+			break
+		}
+
+		cache_type := if cache_type_u32 >= u32(CacheType.count) {
+			CacheType.unknown
+		} else {
+			unsafe { CacheType(cache_type_u32) }
+		}
+
+		cache_level_u32 := (regs.eax >> 5) & 0x7
+		// self_init_cache_level_uint := regs.eax & (1 << 8)
+		// fully_associative_cache_uint := regs.eax & (1 << 9)
+		// max_num_logical_core_sharing_uint := (regs.eax >> 14) & 0x3ff
+		// max_num_physical_cores_uint := (regs.eax >> 26) & 0x3f
+		system_coherency_line_size_u32 := (regs.ebx & 0xFFF) + 1
+		physical_line_partitions_u32 := (regs.ebx >> 12) & 0x3FF + 1
+		ways_of_associativity_u32 := (regs.ebx >> 22) & 0x3FF + 1
+		number_of_sets_u32 := regs.ecx + 1
+		// write_back_invalidate_uint := regs.edx & 1
+		// cache_inclusiveness_uint := regs.edx & (1 << 1)
+		// complex_cache_indexing_uint := regs.edx & (1 << 2)
+		cache_size_u32 := (ways_of_associativity_u32 * physical_line_partitions_u32 * system_coherency_line_size_u32 * number_of_sets_u32) >> 10
+
+		cache_level := if cache_level_u32 >= u32(CacheLevel.count) {
+			CacheLevel.unknown
+		} else {
+			unsafe { CacheLevel(cache_level_u32) }
+		}
+
+		cpu.caches << Cache{
+			level: cache_level
+			@type: cache_type
+			size: int(cache_size_u32)
+			ways: int(ways_of_associativity_u32)
+			line_size: int(system_coherency_line_size_u32)
+			entries: int(number_of_sets_u32)
+			partitions: int(physical_line_partitions_u32)
+		}
 	}
 }
