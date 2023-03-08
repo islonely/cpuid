@@ -1,8 +1,7 @@
 module cpuid
 
 import strings
-
-pub const info = cpu()
+import regex
 
 // Vendor is a representation of a CPU vendor.
 pub enum Vendor {
@@ -123,37 +122,58 @@ pub enum ProcessorType {
 // CPUInfo contains information about the detected system CPU.
 struct CPUInfo {
 mut:
-	max_eax_val int
+	max_eax_val     u32
+	max_ext_eax_val u32
 pub mut:
-	manufacturer_id  string    // manufacturer id provided by the CPU
-	brand_name       string    // brand name generated from CPU manufacturer ID
-	vendor           Vendor    // vendor
-	features         []Feature // features of the CPU
-	physical_cores   int       // Number of physical processor cores in your CPU. Will be 0 if undetectable
-	threads_per_core int = 1 // Number of threads per physical core. Will be 1 if undetectable.
-	logical_cores    int       // Number of physical cores times threads that can run on each core through the use of hyperthreading. Will be 0 if undetectable.
-	family           int       // CPU family number
-	model            int       // CPU model number
-	stepping         int       // CPU stepping info
-	processor_type   ProcessorType
-	freqency         i64 // Clock speed, if known, 0 otherwise. Will attempt to contain base clock speed.
-	boost_frequency  i64 // Max clock speed, if known, 0 otherwise.
-	caches           []Cache
+	manufacturer_id   string // manufacturer id provided by the CPU
+	brand_name        string = 'unknown'
+	vendor            Vendor    // vendor
+	features          []Feature // features of the CPU
+	physical_cores    int = -1 // Number of physical processor cores in your CPU. Will be -1 if undetectable
+	threads_per_core  int = 1 // Number of threads per physical core. Will be 1 if undetectable.
+	logical_cores     int       // Number of physical cores times threads that can run on each core through the use of hyperthreading. Will be 0 if undetectable.
+	family            int       // CPU family number
+	model             int       // CPU model number
+	stepping          int       // CPU stepping info
+	processor_type    ProcessorType
+	freqency          int = -1 // Clock speed measured in MHz. Will be -1 if undetectable.
+	boost_frequency   int = -1 // Max clock speed measured in MHz. Will be -1 if undetectable.
+	bus_speed         int = -1 // Bus speed measured in MHz. Will be -1 if undetectable.
+	caches            []Cache
+	thermal_and_power struct {
+	pub mut:
+		has_dts  bool // digital thermal sensor
+		has_itbt bool // intel turb boost technology
+		has_arat bool // always running APIC timer
+		has_pln  bool // power limit notification
+		has_ecmd bool // extended clock modulation duty
+		has_ptm  bool // package thermal management
+		has_hcf  bool // hardware coordination feedback
+		has_peb  bool // performance-energy bias
+	}
 }
 
-// cpu will detect current CPU info and return it.
-pub fn cpu() CPUInfo {
+// info will detect current CPU info and return it.
+pub fn info() CPUInfo {
 	mut cpu := CPUInfo{}
-	leaf0(mut cpu)
-	leaf1(mut cpu)
-	leaf2(mut cpu)
+	cpu.leaf0()
+	cpu.leaf1()
+	cpu.leaf2()
 	// leaf3 gets processor serial number. This is not used on modern CPUs
-	leaf4(mut cpu)
+	asm_cpuid(eax: 3)
+	cpu.leaf4()
+	cpu.leaf6()
+	cpu.leaf0xb()
+	cpu.leaf0x80000000()
+	// leaf 0x80000002 must come before leaf 16 if leaf 0x15 is unavailable.
+	// But also, leaf 0x80000002 doesn't work if it's moved above leaf 0x80000000
+	cpu.leaf0x80000002()
+	cpu.leaf0x16()
 	return cpu
 }
 
 // leaf0 sets the CPU brand name and Vendor
-fn leaf0(mut cpu CPUInfo) {
+fn (mut cpu CPUInfo) leaf0() {
 	mut vendor_bldr := strings.new_builder(12)
 	regs := asm_cpuid(eax: 0)
 	vendor_bldr.write_string(regs.stringify('b'))
@@ -163,33 +183,33 @@ fn leaf0(mut cpu CPUInfo) {
 
 	// Vendor set based off of this:
 	// https://en.wikipedia.org/wiki/CPUID
-	cpu.brand_name, cpu.vendor = match cpu.manufacturer_id {
-		'AMDisbetter!', 'AuthenticAMD' { 'AMD', Vendor.amd }
-		'CentaurHauls', 'VIA VIA VIA ' { 'VIA', Vendor.via }
-		'CyrixInstead' { 'IBM', Vendor.ibm }
-		'GenuineIntel' { 'Intel', Vendor.intel }
-		'TransmetaCPU', 'GenuineTMx86' { 'Transmeta', Vendor.transmeta }
-		'Geode by NSC' { 'National Semiconductor', Vendor.nsc }
-		'NexGenDriven' { 'NexGen', Vendor.nexgen }
-		'RiseRiseRise' { 'Rise Technology', Vendor.rise }
-		'SiS SiS SiS ' { 'Silicon Integrated Systems', Vendor.sis }
-		'UMC UMC UMC ' { 'United Microelectronics Corporation', Vendor.umc }
-		'  Shanghai  ' { 'Zhaoxin', Vendor.zhaoxin }
-		'HygonGenuine' { 'Hygone', Vendor.hygon }
-		'bhyve bhyve ' { 'bhyve', Vendor.bhyve }
-		' KVMKVMKVM  ' { 'Kernel-Based Virtual Machine', Vendor.kvm }
-		'TCGTCGTCGTCG' { 'QEMU', Vendor.qemu }
-		'Microsoft Hv' { 'Microsoft Hyper-V / Windows Virtual PC', Vendor.hyperv }
-		'VMwareVMware' { 'VMware', Vendor.vmware }
-		'XenVMMXenVMM' { 'Xen', Vendor.xenhvm }
-		else { '<unknown>', Vendor.unknown }
+	cpu.vendor = match cpu.manufacturer_id {
+		'AMDisbetter!', 'AuthenticAMD' { Vendor.amd }
+		'CentaurHauls', 'VIA VIA VIA ' { Vendor.via }
+		'CyrixInstead' { Vendor.ibm }
+		'GenuineIntel' { Vendor.intel }
+		'TransmetaCPU', 'GenuineTMx86' { Vendor.transmeta }
+		'Geode by NSC' { Vendor.nsc }
+		'NexGenDriven' { Vendor.nexgen }
+		'RiseRiseRise' { Vendor.rise }
+		'SiS SiS SiS ' { Vendor.sis }
+		'UMC UMC UMC ' { Vendor.umc }
+		'  Shanghai  ' { Vendor.zhaoxin }
+		'HygonGenuine' { Vendor.hygon }
+		'bhyve bhyve ' { Vendor.bhyve }
+		' KVMKVMKVM  ' { Vendor.kvm }
+		'TCGTCGTCGTCG' { Vendor.qemu }
+		'Microsoft Hv' { Vendor.hyperv }
+		'VMwareVMware' { Vendor.vmware }
+		'XenVMMXenVMM' { Vendor.xenhvm }
+		else { Vendor.unknown }
 	}
 
-	cpu.max_eax_val = int(regs.eax)
+	cpu.max_eax_val = regs.eax
 }
 
 // leaf1 sets processor info and features
-fn leaf1(mut cpu CPUInfo) {
+fn (mut cpu CPUInfo) leaf1() {
 	if cpu.max_eax_val < 1 {
 		return
 	}
@@ -304,7 +324,7 @@ fn leaf1(mut cpu CPUInfo) {
 }
 
 // leaf2 sets some CPU cache/TLB information
-fn leaf2(mut cpu CPUInfo) {
+fn (mut cpu CPUInfo) leaf2() {
 	if cpu.vendor != .intel {
 		return
 	}
@@ -313,11 +333,19 @@ fn leaf2(mut cpu CPUInfo) {
 	}
 
 	regs := asm_cpuid(eax: 2)
-	// pretty sure this should be used for older intel CPUs only
+	// TODO: pretty sure this should be used for older intel CPUs only
+}
+
+// leaf3 sets CPU serial number for processors Pentium 4 and earlier
+fn (mut cpu CPUInfo) leaf3() {
+	if cpu.max_eax_val < 3 || cpu.vendor != .intel {
+		return
+	}
+	// TODO: implement this
 }
 
 // leaf4 sets CPU cache information
-fn leaf4(mut cpu CPUInfo) {
+fn (mut cpu CPUInfo) leaf4() {
 	if cpu.vendor != .intel {
 		return
 	}
@@ -371,3 +399,97 @@ fn leaf4(mut cpu CPUInfo) {
 		}
 	}
 }
+
+// leaf6 sets CPU thermal and power information
+fn (mut cpu CPUInfo) leaf6() {
+	if cpu.max_eax_val < 6 {
+		return
+	}
+
+	regs := asm_cpuid(eax: 6)
+	dts := get_bits(regs.eax, 0, 1)
+	itbt := get_bits(regs.eax, 1, 1)
+	arat := get_bits(regs.eax, 2, 1)
+	pln := get_bits(regs.eax, 4, 1)
+	ecmd := get_bits(regs.eax, 5, 1)
+	ptm := get_bits(regs.eax, 6, 1)
+	hcf := get_bits(regs.ecx, 0, 1)
+	peb := get_bits(regs.ecx, 3, 1)
+	cpu.thermal_and_power.has_dts = if dts > 0 { true } else { false }
+	cpu.thermal_and_power.has_itbt = if itbt > 0 { true } else { false }
+	cpu.thermal_and_power.has_arat = if arat > 0 { true } else { false }
+	cpu.thermal_and_power.has_pln = if pln > 0 { true } else { false }
+	cpu.thermal_and_power.has_ecmd = if ecmd > 0 { true } else { false }
+	cpu.thermal_and_power.has_ptm = if ptm > 0 { true } else { false }
+	cpu.thermal_and_power.has_hcf = if hcf > 0 { true } else { false }
+	cpu.thermal_and_power.has_peb = if peb > 0 { true } else { false }
+}
+
+// leaf0x16 sets the CPU frequency, boost frequency, and bus speed.
+fn (mut cpu CPUInfo) leaf0x16() {
+	if cpu.max_eax_val >= 0x15 {
+		regs := asm_cpuid(eax: 0x15)
+		if 0 !in [regs.eax, regs.ebx, regs.ecx] {
+			cpu.freqency = int(i64(regs.ecx) * i64(regs.ebx) / i64(regs.eax) / 1_000_000)
+		}
+	}
+	if cpu.max_eax_val >= 0x16 {
+		regs := asm_cpuid(eax: 0x16)
+		// base clock
+		if regs.eax & 0xffff > 0 {
+			cpu.freqency = int(regs.eax & 0xffff)
+		}
+
+		// boost clock
+		if regs.ebx & 0xffff > 0 {
+			cpu.boost_frequency = int(regs.ebx & 0xffff)
+		}
+	}
+	if cpu.freqency != -1 {
+		return
+	}
+}
+
+// leaf0xb sets CPU core information.
+fn (mut cpu CPUInfo) leaf0xb() {
+	if cpu.max_eax_val < 0xb {
+		return
+	}
+
+	regs := asm_cpuid(eax: 0x0b, ecx: 1)
+	cpu.logical_cores = get_bits(regs.ebx, 0, 16)
+	cpu.physical_cores = if Feature.htt in cpu.features {
+		cpu.logical_cores / 2
+	} else {
+		cpu.logical_cores
+	}
+	cpu.threads_per_core = cpu.logical_cores / cpu.physical_cores
+}
+
+// leaf0x80000000 sets the max extended input value for the CPUID instruction.
+fn (mut cpu CPUInfo) leaf0x80000000() {
+	regs := asm_cpuid(eax: 0x80000000)
+	cpu.max_ext_eax_val = regs.eax
+}
+
+// leaf0x80000002 sets the CPU brand name.
+fn (mut cpu CPUInfo) leaf0x80000002() {
+	if cpu.max_ext_eax_val < 0x80000004 {
+		return
+	}
+
+	mut brand_name_bytes := []u8{cap: 48}
+	for i := u32(0); i < 3; i++ {
+		regs := asm_cpuid(eax: 0x80000002 + i)
+		brand_name_bytes << regs.bytes()
+	}
+	cpu.brand_name = brand_name_bytes.bytestr()
+}
+
+// fn leaf0x80000008(mut cpu CPUInfo) {
+// 	if cpu.max_ext_eax_val < 0x80000008 {
+// 		return
+// 	}
+//
+// 	regs := asm_cpuid(eax: 0x80000008)
+// }
