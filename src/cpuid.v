@@ -42,8 +42,8 @@ pub enum Vendor {
 	count
 }
 
-// Feature
-pub enum Feature {
+// Features
+pub enum Features {
 	unknown = -1
 	fpu // Onboard x87 FPU
 	vme // Virtual 8086 mode extenstions (such as VIF, VIP, PIV)
@@ -106,6 +106,122 @@ pub enum Feature {
 	f16c // F16C (half-precision) FP feature
 	rdrnd // RDRAND (on-chip random number generator) feature
 	hypervisor // Hypervisor present (always zero on physical CPUs)
+	fsgsbase // access to base of %fs and %gs
+	ia32_tsc_adjust_msr
+	sgx // software guard extensions
+	bmi1 // bit manipulation instruction set 1
+	hle // tsx hardware lock elision
+	avx2 // advanced vector extensions 2
+	fdp_excptn_only
+	smep // supervisor mode execution prevention
+	bmi2 // bit manipulation instruction set 2
+	erms // enhanced REP MOVSB/STOSB
+	invpcid // INVPCID instruction
+	rtm // TSX restricted transactional memory
+	rdtm_or_pqm // Intel resource director monitoring or AMD platform QOS monitoring
+	mpx // Intel memory protection extensions
+	rdta_or_pqe // Intel resource director allocation or AMD platform QOS enforcement
+	avx512_f // AVX-512 foundation
+	avx512_dq // AVX-512 doubleword and quadword instructions
+	rdseed // RDSEED instruction
+	adx // Intel muli-precision add-carry instruction extensions
+	smap // supervisor mode access prevention
+	avx512_ifma // AVX-512 integer fused multiply-add instructions
+	clflushopt // CLFLUSHOPT instruction
+	clwb // CLWB instruction
+	pt // Intel processor trace
+	avx512_pf // AVX-512 prefetch instructions
+	avx512_er // AVX-512 exponential and reciprocal instructions
+	avx512_cd // AVX-512 conflict detection instructions
+	sha // SHA extensions
+	avx512_bw // AVX-512 byte and word instructions
+	avx512_vl // AVX-512 vector length extensions
+	prefetchwt1 // PREFETCHWT1 isntruction
+	avx512_vbmi // AVX-512 vector bit manipulation instructions
+	umip // user-mode instruction prevention
+	pku // memory protection keys for user-mode pages
+	ospke // PKU enabled by OS
+	waitpkg // timed pause and user-level monitor/wait
+	avx512_vbmi2 // AVX-512 vector bit manipulation instructions 2
+	cetss // control flow enforcement shadow stack
+	gfni // Galois field instructions
+	vaes // vector AES instruction set (VEX-256/EVEX)
+	vpclmulqdq // CLMUL instruction set (VEX-256/EVEX)
+	avx512_vnni // AVX-512 vector neural network instructions
+	avx512_bitalg // AVX-512 BITALG instructions
+	tme // IA32_TME related MSRs
+	avx512_vpopcntdq // AVX-512 vector pupulation count double and quad word
+	la57 // 5-level page (57 address bits)
+	rdpid // read processor id and IA32_TSC_AUX
+	kl // key locker
+	bus_lock_detect
+	cldemote // cache line demote
+	movdiri // MOVDIRI instruction
+	movdi64b // MOVDIR64B instruction
+	enqcmd // enqueue stores
+	sgx_lc // SGX launch configuration
+	pks // protection keys for supervisor-mode pages
+	sgx_keys // attestation services for Intel SGX
+	avx5124_vnniw // AVX-512 4-register neural network instructions
+	avx512_4fmaps // AVX-512 4-regiser multiply accumulation single precision
+	fsrm // fast short REP MOVSB
+	uintr // user inter-processor interrupts
+	avx512_vp2intersect // AVX-512 VP2INTERSECT doubleword and quadword instructions
+	srdbs_ctrl // special register buffer data sampling mitigations
+	mc_clear // VERW instruction clears CPU buffers
+	rtm_always_abort // all TSX transactions are aborted
+	tsx_force_abort_msr
+	serialize // SERIALIZE instruction
+	hybrid // mixture of CPU types in processor topology (eg. Alder Lake)
+	tsxldtrk // TSXLDTRK instruction
+	pconfig // platform configuration (memory excryption technologies instructions)
+	lbr // architectural last brand records
+	cet_ibt // control flow enforcement (CET) indirect branch tracking
+	amx_bf16 // tile computation on bfloat16 numbers
+	avx512_fp16 // AVX-512 FP16 half-precision floating-point instructions
+	amx_tile // tile architecture
+	amx_int8 // tile computation on 8-bit integers
+	spec_ctrl // speculation control, part of indirect branch control (IBC): indirect branch restricted speculation (IBRS) and indirect branch prediction barrier (IBPB)
+	stibp // single thread indirect branch predictor, part of IBC
+	l1d_flush // ia32_flush_cmd msr
+	ia32_arch_capabilities // lists speculative side channel mitigations
+	ia32_core_capabilities_msr // lists model-specific core capabilities
+	ssbd // speculative store bypass disable, as mitigation for speculative store bypass (IA32_SPEC_CTRL)
+	rao_int // RAO-INT instructions
+	avx_vnni // AVX vector neural network instructions
+	avx512_bf16 // AVX-512 instructions for bfloat16 numbers
+	lass // linear address space separation
+	cmpccxadd // CMPccXADD instructions
+	archperfmonext // architectural performance monitoring extended leaf (eax=23h)
+	fast_zero_rep_movsb // fast zero-length MOVSB
+	fast_short_rep_stosb // fast zero-length STOSB
+	fast_short_rep_cmpsb_scasb // fast zero-length CMPSB and SCASB
+	fred // flexible return and event delivery
+	lkgs // LKGS instruction
+	wrmsrns // WRMSRNS instruction
+	amx_fp16 // AMX instructions for FP16 numbers
+	hreset // HRESET instruction, IA32_HRESET_ENABLE MSR, and processor histor reset leaf (eax=20h)
+	avx_ifma // AVX IFMA instructions
+	lam // linear address masking
+	msrlist // RDMSRLIST and WRMSRLIST instructions, and the IA32_BARRIER MSR
+	ia32_ppin
+	avx_vnn_int8 // AVX VNNNI INT8 instructions
+	avx_ne_convert // AVX NE CONVERT instructions
+	prefetchiti // PREFETCHIT0 and PREFETCHIT1 instructions
+	cet_sss // control-flow enforcement technology supervisor shadow stacks
+	xsaveopt // XSAVEOPT instruction
+	xsavec // XSAVEC instruction
+	xgetbv_ecx1 // XGETBV with ECX=1 support
+	xss // XSAVES and XRSTORS instructions
+	sgx1 // SGX1 leaf functions
+	sgx2 // SGX2 leaf functions
+	oss // ENCLV leaves: EINCVIRTCHILD, EDECVIRTCHILD, and ESETCONTEXT
+	encls // ENCLS leaves: ETRACKC, ERDINFO, ELDBC, ELUDC
+	enclu // ENCLU leaves: EDECSSA
+	ptwrite
+	aes_kle // AES "key locker" instructions
+	aes_wide_kl // AES "wide key locker" instructions
+	kl_msrs // "key locker" MSRs
 	count
 }
 
@@ -127,14 +243,14 @@ mut:
 pub mut:
 	manufacturer_id   string // manufacturer id provided by the CPU
 	brand_name        string = 'unknown'
-	vendor            Vendor    // vendor
-	features          []Feature // features of the CPU
+	vendor            Vendor     // vendor
+	features          []Features // features of the CPU
 	physical_cores    int = -1 // Number of physical processor cores in your CPU. Will be -1 if undetectable
 	threads_per_core  int = 1 // Number of threads per physical core. Will be 1 if undetectable.
-	logical_cores     int       // Number of physical cores times threads that can run on each core through the use of hyperthreading. Will be 0 if undetectable.
-	family            int       // CPU family number
-	model             int       // CPU model number
-	stepping          int       // CPU stepping info
+	logical_cores     int        // Number of physical cores times threads that can run on each core through the use of hyperthreading. Will be 0 if undetectable.
+	family            int        // CPU family number
+	model             int        // CPU model number
+	stepping          int        // CPU stepping info
 	processor_type    ProcessorType
 	freqency          int = -1 // Clock speed measured in MHz. Will be -1 if undetectable.
 	boost_frequency   int = -1 // Max clock speed measured in MHz. Will be -1 if undetectable.
@@ -163,6 +279,11 @@ pub fn info() CPUInfo {
 	asm_cpuid(eax: 3)
 	cpu.leaf4()
 	cpu.leaf6()
+	cpu.leaf7()
+	cpu.leaf0x0d()
+	cpu.leaf0x12()
+	cpu.leaf0x14()
+	cpu.leaf0x19()
 	cpu.leaf0xb()
 	cpu.leaf0x80000000()
 	// leaf 0x80000002 must come before leaf 16 if leaf 0x15 is unavailable.
@@ -425,6 +546,191 @@ fn (mut cpu CPUInfo) leaf6() {
 	cpu.thermal_and_power.has_peb = if peb > 0 { true } else { false }
 }
 
+fn (mut cpu CPUInfo) leaf7() {
+	if cpu.max_eax_val < 7 {
+		return
+	}
+
+	// EAX=7, ECX=0
+	{
+		regs := asm_cpuid(eax: 7, ecx: 0)
+		bb, cb, db := u32_to_bits(regs.ebx), u32_to_bits(regs.ecx), u32_to_bits(regs.edx)
+		// vfmt off
+		if bb[0] { cpu.features << .fsgsbase }
+		if bb[1] { cpu.features << .ia32_tsc_adjust_msr }
+		if bb[2] { cpu.features << .sgx }
+		if bb[3] { cpu.features << .bmi1 }
+		if bb[4] { cpu.features << .hle }
+		if bb[5] { cpu.features << .avx2 }
+		if bb[6] { cpu.features << .fdp_excptn_only }
+		if bb[7] { cpu.features << .smep }
+		if bb[8] { cpu.features << .bmi2 }
+		if bb[9] { cpu.features << .erms }
+		if bb[10] { cpu.features << .invpcid }
+		if bb[11] { cpu.features << .rtm }
+		if bb[12] { cpu.features << .rdtm_or_pqm }
+		if bb[14] { cpu.features << .mpx }
+		if bb[15] { cpu.features << .rdta_or_pqe }
+		if bb[16] { cpu.features << .avx512_f }
+		if bb[17] { cpu.features << .avx512_dq }
+		if bb[18] { cpu.features << .rdseed }
+		if bb[19] { cpu.features << .adx }
+		if bb[20] { cpu.features << .smap }
+		if bb[21] { cpu.features << .avx512_ifma }
+		if bb[23] { cpu.features << .clflushopt }
+		if bb[24] { cpu.features << .clwb }
+		if bb[25] { cpu.features << .pt }
+		if bb[26] { cpu.features << .avx512_pf }
+		if bb[27] { cpu.features << .avx512_er }
+		if bb[28] { cpu.features << .avx512_cd }
+		if bb[29] { cpu.features << .sha }
+		if bb[30] { cpu.features << .avx512_bw }
+		if bb[31] { cpu.features << .avx512_vl }
+		if cb[0] { cpu.features << .prefetchwt1 }
+		if cb[1] { cpu.features << .avx512_vbmi }
+		if cb[2] { cpu.features << .umip }
+		if cb[3] { cpu.features << .pku }
+		if cb[4] { cpu.features << .ospke }
+		if cb[5] { cpu.features << .waitpkg }
+		if cb[6] { cpu.features << .avx512_vbmi2 }
+		if cb[7] { cpu.features << .cetss }
+		if cb[8] { cpu.features << .gfni }
+		if cb[9] { cpu.features << .vaes }
+		if cb[10] { cpu.features << .vpclmulqdq }
+		if cb[11] { cpu.features << .avx512_vnni }
+		if cb[12] { cpu.features << .avx512_bitalg }
+		if cb[13] { cpu.features << .tme }
+		if cb[14] { cpu.features << .avx512_vpopcntdq }
+		if cb[16] { cpu.features << .la57 }
+		if cb[22] { cpu.features << .rdpid }
+		if cb[23] { cpu.features << .kl }
+		if cb[24] { cpu.features << .bus_lock_detect }
+		if cb[25] { cpu.features << .cldemote }
+		if cb[27] { cpu.features << .movdiri }
+		if cb[28] { cpu.features << .movdi64b }
+		if cb[29] { cpu.features << .enqcmd }
+		if cb[30] { cpu.features << .sgx_lc }
+		if cb[31] { cpu.features << .pks }
+		if db[0] { cpu.features << .sgx_keys }
+		if db[2] { cpu.features << .avx5124_vnniw }
+		if db[3] { cpu.features << .avx512_4fmaps }
+		if db[4] { cpu.features << .fsrm }
+		if db[5] { cpu.features << .uintr }
+		if db[8] { cpu.features << .avx512_vp2intersect }
+		if db[9] { cpu.features << .srdbs_ctrl }
+		if db[10] { cpu.features << .mc_clear }
+		if db[11] { cpu.features << .rtm_always_abort }
+		if db[13] { cpu.features << .tsx_force_abort_msr }
+		if db[14] { cpu.features << .serialize }
+		if db[15] { cpu.features << .hybrid }
+		if db[16] { cpu.features << .tsxldtrk }
+		if db[18] { cpu.features << .pconfig }
+		if db[19] { cpu.features << .lbr }
+		if db[20] { cpu.features << .cet_ibt }
+		if db[22] { cpu.features << .amx_bf16 }
+		if db[23] { cpu.features << .avx512_fp16 }
+		if db[24] { cpu.features << .amx_tile }
+		if db[25] { cpu.features << .amx_int8 }
+		if db[26] { cpu.features << .spec_ctrl }
+		if db[27] { cpu.features << .stibp }
+		if db[28] { cpu.features << .l1d_flush }
+		if db[29] { cpu.features << .ia32_arch_capabilities }
+		if db[30] { cpu.features << .ia32_core_capabilities_msr }
+		if db[31] { cpu.features << .ssbd }
+		// vfmt on
+	}
+	// EAX=7, ECX=1
+	{
+		regs := asm_cpuid(eax: 7, ecx: 1)
+		ab, bb, db := u32_to_bits(regs.eax), u32_to_bits(regs.ebx), u32_to_bits(regs.edx)
+		// vfmt off
+		if ab[3] { cpu.features << .rao_int }
+		if ab[4] { cpu.features << .avx_vnni }
+		if ab[5] { cpu.features << .avx512_bf16 }
+		if ab[6] { cpu.features << .lass }
+		if ab[7] { cpu.features << .cmpccxadd }
+		if ab[8] { cpu.features << .archperfmonext }
+		if ab[10] { cpu.features << .fast_zero_rep_movsb }
+		if ab[11] { cpu.features << .fast_short_rep_stosb }
+		if ab[12] { cpu.features << .fast_short_rep_cmpsb_scasb }
+		if ab[17] { cpu.features << .fred }
+		if ab[18] { cpu.features << .lkgs }
+		if ab[19] { cpu.features << .wrmsrns }
+		if ab[21] { cpu.features << .amx_fp16 }
+		if ab[22] { cpu.features << .hreset }
+		if ab[23] { cpu.features << .avx_ifma }
+		if ab[26] { cpu.features << .lam }
+		if ab[27] { cpu.features << .msrlist }
+		if bb[0] { cpu.features << .ia32_ppin }
+		if db[4] { cpu.features << .avx_vnn_int8 }
+		if db[5] { cpu.features << .avx_ne_convert }
+		if db[14] { cpu.features << .prefetchiti }
+		if db[18] { cpu.features << .cet_sss }
+		// vfmt on
+	}
+}
+
+// leaf0x0d
+fn (mut cpu CPUInfo) leaf0x0d() {
+	if cpu.max_eax_val < 0x0d {
+		return
+	}
+
+	regs := asm_cpuid(eax: 0x0d, ecx: 1)
+	ab := u32_to_bits(regs.eax)
+	// vfmt off
+	if ab[0] { cpu.features << .xsaveopt }
+	if ab[1] { cpu.features << .xsavec }
+	if ab[2] { cpu.features << .xgetbv_ecx1 }
+	if ab[3] { cpu.features << .xss }
+	// vfmt on
+}
+
+// leaf0x12
+fn (mut cpu CPUInfo) leaf0x12() {
+	if cpu.max_eax_val < 0x12 {
+		return
+	}
+
+	regs := asm_cpuid(eax: 0x12, ecx: 0)
+	ab := u32_to_bits(regs.eax)
+	// vfmt off
+	if ab[0] { cpu.features << .sgx1 }
+	if ab[1] { cpu.features << .sgx2 }
+	if ab[5] { cpu.features << .oss }
+	if ab[6] { cpu.features << .encls }
+	if ab[11] { cpu.features << .enclu }
+	// vfmt on
+}
+
+// leaf0x14
+fn (mut cpu CPUInfo) leaf0x14() {
+	if cpu.max_eax_val < 0x14 {
+		return
+	}
+
+	regs := asm_cpuid(eax: 0x12, ecx: 0)
+	bb := u32_to_bits(regs.ebx)
+	// vfmt off
+	if bb[4] { cpu.features << .ptwrite }
+	// vfmt on
+}
+
+// leaf0x19
+fn (mut cpu CPUInfo) leaf0x19() {
+	if cpu.max_eax_val < 0x19 {
+		return
+	}
+
+	regs := asm_cpuid(eax: 0x14, ecx: 0)
+	bb := u32_to_bits(regs.ebx)
+	// vfmt off
+	if bb[0] { cpu.features << .aes_kle }
+	if bb[2] { cpu.features << .aes_wide_kl }
+	if bb[4] { cpu.features << .kl_msrs }
+	// vfmt on
+}
+
 // leaf0x16 sets the CPU frequency, boost frequency, and bus speed.
 fn (mut cpu CPUInfo) leaf0x16() {
 	if cpu.max_eax_val >= 0x15 {
@@ -458,7 +764,7 @@ fn (mut cpu CPUInfo) leaf0xb() {
 
 	regs := asm_cpuid(eax: 0x0b, ecx: 1)
 	cpu.logical_cores = get_bits(regs.ebx, 0, 16)
-	cpu.physical_cores = if Feature.htt in cpu.features {
+	cpu.physical_cores = if Features.htt in cpu.features {
 		cpu.logical_cores / 2
 	} else {
 		cpu.logical_cores
@@ -478,12 +784,12 @@ fn (mut cpu CPUInfo) leaf0x80000002() {
 		return
 	}
 
-	mut brand_name_bytes := []u8{cap: 48}
+	mut name_bldr := strings.new_builder(48)
 	for i := u32(0); i < 3; i++ {
 		regs := asm_cpuid(eax: 0x80000002 + i)
-		brand_name_bytes << regs.bytes()
+		name_bldr.write_string(regs.stringify('abcd'))
 	}
-	cpu.brand_name = brand_name_bytes.bytestr()
+	cpu.brand_name = name_bldr.str()
 }
 
 // fn leaf0x80000008(mut cpu CPUInfo) {

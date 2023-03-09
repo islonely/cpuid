@@ -2,6 +2,7 @@ module cpuid
 
 import strings
 
+// Registers represents the 32-bit registers of the CPU.
 struct Registers {
 pub mut:
 	eax u32
@@ -11,13 +12,13 @@ pub mut:
 }
 
 [inline]
-fn (r Registers) str() string {
-	return r.stringify('abcd')
-}
-
-[inline]
 fn (r Registers) bytes() []u8 {
-	return r.str().bytes()
+	mut bytes := []u8{cap: 16}
+	bytes << u32_to_bytes(r.eax)
+	bytes << u32_to_bytes(r.ebx)
+	bytes << u32_to_bytes(r.ecx)
+	bytes << u32_to_bytes(r.edx)
+	return bytes
 }
 
 fn (r Registers) stringify(reg_order string) string {
