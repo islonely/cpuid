@@ -222,6 +222,43 @@ pub enum Features {
 	aes_kle // AES "key locker" instructions
 	aes_wide_kl // AES "wide key locker" instructions
 	kl_msrs // "key locker" MSRs
+	syscall // SYSCALL and SYSRET instructions
+	mp // multiprocessor capable
+	nx // NX bit
+	mmxext // Extended MMX
+	fxsr_opt // FXSAVE/FXRSTOR optimizations
+	pdpe1gb // gigabyte pages
+	rdtscp // RDTSCP instruction
+	lm // long mode
+	_3dnowext // extended 3DNow!
+	_3dnow // 3DNow!
+	lahf_lm // LAHF/SAHF in long mode
+	cmp_legacy // hyperthreading not valid
+	svm // secure virtual machine
+	extapic // extended APIC space
+	cr8_legacy // CR8 in 32-bit mode
+	abm // advanced bit manipulation (lzcnt and popcnt)
+	sse4a // SSE4a
+	misalignsse // misaligned SSE mode
+	_3dnowprefetch // PREFETCH and PREFETCHW instructions
+	osvw // OS visible workaround
+	ibs // instruction based sampling
+	xop // XOP instruction set
+	skinit // SKINIT/STGI instructions
+	wdt // watchdog timer
+	lwp // light weight profiling
+	fma4 // 4 operands fused multiply-add
+	tce // translation cache extension
+	nodeid_msr // NodeID MSR
+	tbm // trailing bit manipulation
+	topoext // topology extensions
+	perfctr_core // core performance counter extensions
+	perfctr_nb // NB performace counter extensions
+	dbx // data breakpoint extensions
+	perftsc // preformance TSC
+	pcx_l2i // L2I perf counter extensions
+	monitorx // MONITORX and MWAITX instructions
+	addr_mask_ext
 	count
 }
 
@@ -776,6 +813,73 @@ fn (mut cpu CPUInfo) leaf0xb() {
 fn (mut cpu CPUInfo) leaf0x80000000() {
 	regs := asm_cpuid(eax: 0x80000000)
 	cpu.max_ext_eax_val = regs.eax
+}
+
+// leaf0x80000001 sets features for AMD CPUs
+fn (mut cpu CPUInfo) leaf0x80000001() {
+	if cpu.max_ext_eax_val < 0x80000001 || cpu.vendor != .amd {
+		return
+	}
+
+	regs := asm_cpuid(eax: 0x80000001)
+	cb, db := u32_to_bits(regs.ecx), u32_to_bits(regs.edx)
+	// vfmt off
+	if db[0] { cpu.features << .fpu }
+	if db[1] { cpu.features << .vme }
+	if db[2] { cpu.features << .de }
+	if db[3] { cpu.features << .pse }
+	if db[4] { cpu.features << .tsc }
+	if db[5] { cpu.features << .msr }
+	if db[6] { cpu.features << .pae }
+	if db[7] { cpu.features << .mce }
+	if db[8] { cpu.features << .cx8 }
+	if db[9] { cpu.features << .apic }
+	if db[11] { cpu.features << .syscall }
+	if db[12] { cpu.features << .mtrr }
+	if db[13] { cpu.features << .pge }
+	if db[14] { cpu.features << .mca }
+	if db[15] { cpu.features << .cmov }
+	if db[16] { cpu.features << .pat }
+	if db[17] { cpu.features << .pse_36 }
+	if db[19] { cpu.features << .mp }
+	if db[20] { cpu.features << .nx }
+	if db[22] { cpu.features << .mmxext }
+	if db[23] { cpu.features << .mmx }
+	if db[24] { cpu.features << .fxsr }
+	if db[25] { cpu.features << .fxsr_opt }
+	if db[26] { cpu.features << .pdpe1gb }
+	if db[27] { cpu.features << .rdtscp }
+	if db[29] { cpu.features << .lm }
+	if db[30] { cpu.features << ._3dnowext }
+	if db[31] { cpu.features << ._3dnow }
+	if cb[0] { cpu.features << .lahf_lm }
+	if cb[1] { cpu.features << .cmp_legacy }
+	if cb[2] { cpu.features << .svm }
+	if cb[3] { cpu.features << .extapic }
+	if cb[4] { cpu.features << .cr8_legacy }
+	if cb[5] { cpu.features << .abm }
+	if cb[6] { cpu.features << .sse4a }
+	if cb[7] { cpu.features << .misalignsse }
+	if cb[8] { cpu.features << ._3dnowprefetch }
+	if cb[9] { cpu.features << .osvw }
+	if cb[10] { cpu.features << .ibs }
+	if cb[11] { cpu.features << .xop }
+	if cb[12] { cpu.features << .skinit }
+	if cb[13] { cpu.features << .wdt }
+	if cb[15] { cpu.features << .lwp }
+	if cb[16] { cpu.features << .fma4 }
+	if cb[17] { cpu.features << .tce }
+	if cb[19] { cpu.features << .nodeid_msr }
+	if cb[21] { cpu.features << .tbm }
+	if cb[22] { cpu.features << .topoext }
+	if cb[23] { cpu.features << .perfctr_core }
+	if cb[24] { cpu.features << .perfctr_nb }
+	if cb[26] { cpu.features << .dbx }
+	if cb[27] { cpu.features << .perftsc }
+	if cb[28] { cpu.features << .pcx_l2i }
+	if cb[29] { cpu.features << .monitorx }
+	if cb[30] { cpu.features << .addr_mask_ext }
+	// vfmt on
 }
 
 // leaf0x80000002 sets the CPU brand name.
