@@ -1,7 +1,6 @@
 module cpuid
 
 import strings
-import regex
 
 // Vendor is a representation of a CPU vendor.
 pub enum Vendor {
@@ -490,7 +489,7 @@ fn (mut cpu CPUInfo) leaf2() {
 		return
 	}
 
-	regs := asm_cpuid(eax: 2)
+	_ := asm_cpuid(eax: 2)
 	// TODO: pretty sure this should be used for older intel CPUs only
 }
 
