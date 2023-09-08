@@ -272,7 +272,8 @@ pub enum ProcessorType {
 }
 
 // CPUInfo contains information about the detected system CPU.
-struct CPUInfo {
+[noinit]
+pub struct CPUInfo {
 mut:
 	max_eax_val     u32
 	max_ext_eax_val u32
