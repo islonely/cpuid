@@ -11,7 +11,7 @@ pub mut:
 	edx u32
 }
 
-[inline]
+@[inline]
 fn (r Registers) bytes() []u8 {
 	mut bytes := []u8{cap: 16}
 	bytes << u32_to_bytes(r.eax)
@@ -83,7 +83,7 @@ fn u32_to_bits(x u32) []bool {
 }
 
 // get_bits returns the value beginning at `pos` to `amount`. Least significant bit.
-[inline]
+@[inline]
 fn get_bits(src u32, pos int, amount int) int {
 	return int(((1 << amount) - 1) & (src >> pos))
 }

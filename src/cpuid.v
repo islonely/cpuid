@@ -44,219 +44,219 @@ pub enum Vendor {
 // Features
 pub enum Features {
 	unknown = -1
-	fpu // Onboard x87 FPU
-	vme // Virtual 8086 mode extenstions (such as VIF, VIP, PIV)
-	de // Debugging extensions (CR4 bit 3)
-	pse // Page Size Extension
-	tsc // Time Stamp Counter
-	msr // Mode-specific registers
-	pae // Physical Address Extension
-	mce // Machine Check Exception
-	cx8 // CMPXCHG8 (compare-and-swap) instruction
-	apic // Onboard Advanced Programmable Interrupt Controller
-	sep // SYSENTER and SYSEXIT instructions
-	mtrr // Memory Type Range Registers
-	pge // Page Global Enable bit in CR4
-	mca // Machine check architecture
-	cmov // Conditional move and FCMOV instructions
-	pat // Page Attribute Table
-	pse_36 // 36-bit page size extension
-	psn // Processor Serial Number
-	clfsh // CLFLUSH instruction (SSE2)
-	ds // Debug store: save trace of executed jumps
-	acpi // Onboard thermal control MSRs for ACPI
-	mmx // MMX instructions
-	fxsr // FXSAVE, FXRESTOR instructions, CR4 bit 9
-	sse // SSE instructions (a.k.a. Katmai New Instructions)
-	sse2 // SSE2 instructions
-	ss // CPU cache implements self-snoop
-	htt // Hyper-threading
-	tm // Thermal monitor automatically limits temperature
-	ia64 // IA64 processor emulating x86
-	pbe // Pending Break Enable (PBE# pin) wakeup capability
-	sse3 // Prescott new Instructions-SSE3 (PNI)
-	pclmulqdq // PCLMULQDQ
-	dtes64 // 64-bit debug store (edx bit 21)
-	monitor // MONITOR and MWAIT instructions (SSE3)
-	ds_cpl // CPL qualified debug store
-	vmx // Virtual Machine eXtensions
-	smx // Safer Mode Extensions (LaGrande)
-	est // Enhanced SpeedStep
-	tm2 // Thermal Monitor 2
-	ssse3 // Supplemental SSE3 instructions
-	cnxt_id // L1 Context ID
-	sdbg // Silicon Debug interface
-	fma // Fused multiply-add (FMA3)
-	cx16 // CMPXCHG16B instruction
-	xtpr // Can disable sending task priority messages
-	pdcm // Perfmon & debug capability
-	pcid // Process context identifiers (CR4 bit 17)
-	dca // Direct cache access for DMA writes
-	sse4_1 // SSE4.1 instructions
-	sse4_2 // SSE4.2 instructions
-	x2apic // x2APIC
-	movbe // MOVBE instruction (big-endian)
-	popcnt // POPCNT instruction
+	fpu          // Onboard x87 FPU
+	vme          // Virtual 8086 mode extenstions (such as VIF, VIP, PIV)
+	de           // Debugging extensions (CR4 bit 3)
+	pse          // Page Size Extension
+	tsc          // Time Stamp Counter
+	msr          // Mode-specific registers
+	pae          // Physical Address Extension
+	mce          // Machine Check Exception
+	cx8          // CMPXCHG8 (compare-and-swap) instruction
+	apic         // Onboard Advanced Programmable Interrupt Controller
+	sep          // SYSENTER and SYSEXIT instructions
+	mtrr         // Memory Type Range Registers
+	pge          // Page Global Enable bit in CR4
+	mca          // Machine check architecture
+	cmov         // Conditional move and FCMOV instructions
+	pat          // Page Attribute Table
+	pse_36       // 36-bit page size extension
+	psn          // Processor Serial Number
+	clfsh        // CLFLUSH instruction (SSE2)
+	ds           // Debug store: save trace of executed jumps
+	acpi         // Onboard thermal control MSRs for ACPI
+	mmx          // MMX instructions
+	fxsr         // FXSAVE, FXRESTOR instructions, CR4 bit 9
+	sse          // SSE instructions (a.k.a. Katmai New Instructions)
+	sse2         // SSE2 instructions
+	ss           // CPU cache implements self-snoop
+	htt          // Hyper-threading
+	tm           // Thermal monitor automatically limits temperature
+	ia64         // IA64 processor emulating x86
+	pbe          // Pending Break Enable (PBE# pin) wakeup capability
+	sse3         // Prescott new Instructions-SSE3 (PNI)
+	pclmulqdq    // PCLMULQDQ
+	dtes64       // 64-bit debug store (edx bit 21)
+	monitor      // MONITOR and MWAIT instructions (SSE3)
+	ds_cpl       // CPL qualified debug store
+	vmx          // Virtual Machine eXtensions
+	smx          // Safer Mode Extensions (LaGrande)
+	est          // Enhanced SpeedStep
+	tm2          // Thermal Monitor 2
+	ssse3        // Supplemental SSE3 instructions
+	cnxt_id      // L1 Context ID
+	sdbg         // Silicon Debug interface
+	fma          // Fused multiply-add (FMA3)
+	cx16         // CMPXCHG16B instruction
+	xtpr         // Can disable sending task priority messages
+	pdcm         // Perfmon & debug capability
+	pcid         // Process context identifiers (CR4 bit 17)
+	dca          // Direct cache access for DMA writes
+	sse4_1       // SSE4.1 instructions
+	sse4_2       // SSE4.2 instructions
+	x2apic       // x2APIC
+	movbe        // MOVBE instruction (big-endian)
+	popcnt       // POPCNT instruction
 	tsc_deadline // APIC implements one-shot operation using a TSC deadline value
-	aes // AES instruction set
-	xsave // XSAVE, XRESTOR, XSETBV, XGETBV
-	osxsave // XSAVE enabled by OS
-	avx // Advanced Vector Extensions
-	f16c // F16C (half-precision) FP feature
-	rdrnd // RDRAND (on-chip random number generator) feature
-	hypervisor // Hypervisor present (always zero on physical CPUs)
-	fsgsbase // access to base of %fs and %gs
+	aes          // AES instruction set
+	xsave        // XSAVE, XRESTOR, XSETBV, XGETBV
+	osxsave      // XSAVE enabled by OS
+	avx          // Advanced Vector Extensions
+	f16c         // F16C (half-precision) FP feature
+	rdrnd        // RDRAND (on-chip random number generator) feature
+	hypervisor   // Hypervisor present (always zero on physical CPUs)
+	fsgsbase     // access to base of %fs and %gs
 	ia32_tsc_adjust_msr
-	sgx // software guard extensions
+	sgx  // software guard extensions
 	bmi1 // bit manipulation instruction set 1
-	hle // tsx hardware lock elision
+	hle  // tsx hardware lock elision
 	avx2 // advanced vector extensions 2
 	fdp_excptn_only
-	smep // supervisor mode execution prevention
-	bmi2 // bit manipulation instruction set 2
-	erms // enhanced REP MOVSB/STOSB
-	invpcid // INVPCID instruction
-	rtm // TSX restricted transactional memory
-	rdtm_or_pqm // Intel resource director monitoring or AMD platform QOS monitoring
-	mpx // Intel memory protection extensions
-	rdta_or_pqe // Intel resource director allocation or AMD platform QOS enforcement
-	avx512_f // AVX-512 foundation
-	avx512_dq // AVX-512 doubleword and quadword instructions
-	rdseed // RDSEED instruction
-	adx // Intel muli-precision add-carry instruction extensions
-	smap // supervisor mode access prevention
-	avx512_ifma // AVX-512 integer fused multiply-add instructions
-	clflushopt // CLFLUSHOPT instruction
-	clwb // CLWB instruction
-	pt // Intel processor trace
-	avx512_pf // AVX-512 prefetch instructions
-	avx512_er // AVX-512 exponential and reciprocal instructions
-	avx512_cd // AVX-512 conflict detection instructions
-	sha // SHA extensions
-	avx512_bw // AVX-512 byte and word instructions
-	avx512_vl // AVX-512 vector length extensions
-	prefetchwt1 // PREFETCHWT1 isntruction
-	avx512_vbmi // AVX-512 vector bit manipulation instructions
-	umip // user-mode instruction prevention
-	pku // memory protection keys for user-mode pages
-	ospke // PKU enabled by OS
-	waitpkg // timed pause and user-level monitor/wait
-	avx512_vbmi2 // AVX-512 vector bit manipulation instructions 2
-	cetss // control flow enforcement shadow stack
-	gfni // Galois field instructions
-	vaes // vector AES instruction set (VEX-256/EVEX)
-	vpclmulqdq // CLMUL instruction set (VEX-256/EVEX)
-	avx512_vnni // AVX-512 vector neural network instructions
-	avx512_bitalg // AVX-512 BITALG instructions
-	tme // IA32_TME related MSRs
+	smep             // supervisor mode execution prevention
+	bmi2             // bit manipulation instruction set 2
+	erms             // enhanced REP MOVSB/STOSB
+	invpcid          // INVPCID instruction
+	rtm              // TSX restricted transactional memory
+	rdtm_or_pqm      // Intel resource director monitoring or AMD platform QOS monitoring
+	mpx              // Intel memory protection extensions
+	rdta_or_pqe      // Intel resource director allocation or AMD platform QOS enforcement
+	avx512_f         // AVX-512 foundation
+	avx512_dq        // AVX-512 doubleword and quadword instructions
+	rdseed           // RDSEED instruction
+	adx              // Intel muli-precision add-carry instruction extensions
+	smap             // supervisor mode access prevention
+	avx512_ifma      // AVX-512 integer fused multiply-add instructions
+	clflushopt       // CLFLUSHOPT instruction
+	clwb             // CLWB instruction
+	pt               // Intel processor trace
+	avx512_pf        // AVX-512 prefetch instructions
+	avx512_er        // AVX-512 exponential and reciprocal instructions
+	avx512_cd        // AVX-512 conflict detection instructions
+	sha              // SHA extensions
+	avx512_bw        // AVX-512 byte and word instructions
+	avx512_vl        // AVX-512 vector length extensions
+	prefetchwt1      // PREFETCHWT1 isntruction
+	avx512_vbmi      // AVX-512 vector bit manipulation instructions
+	umip             // user-mode instruction prevention
+	pku              // memory protection keys for user-mode pages
+	ospke            // PKU enabled by OS
+	waitpkg          // timed pause and user-level monitor/wait
+	avx512_vbmi2     // AVX-512 vector bit manipulation instructions 2
+	cetss            // control flow enforcement shadow stack
+	gfni             // Galois field instructions
+	vaes             // vector AES instruction set (VEX-256/EVEX)
+	vpclmulqdq       // CLMUL instruction set (VEX-256/EVEX)
+	avx512_vnni      // AVX-512 vector neural network instructions
+	avx512_bitalg    // AVX-512 BITALG instructions
+	tme              // IA32_TME related MSRs
 	avx512_vpopcntdq // AVX-512 vector pupulation count double and quad word
-	la57 // 5-level page (57 address bits)
-	rdpid // read processor id and IA32_TSC_AUX
-	kl // key locker
+	la57             // 5-level page (57 address bits)
+	rdpid            // read processor id and IA32_TSC_AUX
+	kl               // key locker
 	bus_lock_detect
-	cldemote // cache line demote
-	movdiri // MOVDIRI instruction
-	movdi64b // MOVDIR64B instruction
-	enqcmd // enqueue stores
-	sgx_lc // SGX launch configuration
-	pks // protection keys for supervisor-mode pages
-	sgx_keys // attestation services for Intel SGX
-	avx5124_vnniw // AVX-512 4-register neural network instructions
-	avx512_4fmaps // AVX-512 4-regiser multiply accumulation single precision
-	fsrm // fast short REP MOVSB
-	uintr // user inter-processor interrupts
+	cldemote            // cache line demote
+	movdiri             // MOVDIRI instruction
+	movdi64b            // MOVDIR64B instruction
+	enqcmd              // enqueue stores
+	sgx_lc              // SGX launch configuration
+	pks                 // protection keys for supervisor-mode pages
+	sgx_keys            // attestation services for Intel SGX
+	avx5124_vnniw       // AVX-512 4-register neural network instructions
+	avx512_4fmaps       // AVX-512 4-regiser multiply accumulation single precision
+	fsrm                // fast short REP MOVSB
+	uintr               // user inter-processor interrupts
 	avx512_vp2intersect // AVX-512 VP2INTERSECT doubleword and quadword instructions
-	srdbs_ctrl // special register buffer data sampling mitigations
-	mc_clear // VERW instruction clears CPU buffers
-	rtm_always_abort // all TSX transactions are aborted
+	srdbs_ctrl          // special register buffer data sampling mitigations
+	mc_clear            // VERW instruction clears CPU buffers
+	rtm_always_abort    // all TSX transactions are aborted
 	tsx_force_abort_msr
-	serialize // SERIALIZE instruction
-	hybrid // mixture of CPU types in processor topology (eg. Alder Lake)
-	tsxldtrk // TSXLDTRK instruction
-	pconfig // platform configuration (memory excryption technologies instructions)
-	lbr // architectural last brand records
-	cet_ibt // control flow enforcement (CET) indirect branch tracking
-	amx_bf16 // tile computation on bfloat16 numbers
-	avx512_fp16 // AVX-512 FP16 half-precision floating-point instructions
-	amx_tile // tile architecture
-	amx_int8 // tile computation on 8-bit integers
-	spec_ctrl // speculation control, part of indirect branch control (IBC): indirect branch restricted speculation (IBRS) and indirect branch prediction barrier (IBPB)
-	stibp // single thread indirect branch predictor, part of IBC
-	l1d_flush // ia32_flush_cmd msr
-	ia32_arch_capabilities // lists speculative side channel mitigations
+	serialize                  // SERIALIZE instruction
+	hybrid                     // mixture of CPU types in processor topology (eg. Alder Lake)
+	tsxldtrk                   // TSXLDTRK instruction
+	pconfig                    // platform configuration (memory excryption technologies instructions)
+	lbr                        // architectural last brand records
+	cet_ibt                    // control flow enforcement (CET) indirect branch tracking
+	amx_bf16                   // tile computation on bfloat16 numbers
+	avx512_fp16                // AVX-512 FP16 half-precision floating-point instructions
+	amx_tile                   // tile architecture
+	amx_int8                   // tile computation on 8-bit integers
+	spec_ctrl                  // speculation control, part of indirect branch control (IBC): indirect branch restricted speculation (IBRS) and indirect branch prediction barrier (IBPB)
+	stibp                      // single thread indirect branch predictor, part of IBC
+	l1d_flush                  // ia32_flush_cmd msr
+	ia32_arch_capabilities     // lists speculative side channel mitigations
 	ia32_core_capabilities_msr // lists model-specific core capabilities
-	ssbd // speculative store bypass disable, as mitigation for speculative store bypass (IA32_SPEC_CTRL)
-	rao_int // RAO-INT instructions
-	avx_vnni // AVX vector neural network instructions
-	avx512_bf16 // AVX-512 instructions for bfloat16 numbers
-	lass // linear address space separation
-	cmpccxadd // CMPccXADD instructions
-	archperfmonext // architectural performance monitoring extended leaf (eax=23h)
-	fast_zero_rep_movsb // fast zero-length MOVSB
-	fast_short_rep_stosb // fast zero-length STOSB
+	ssbd                       // speculative store bypass disable, as mitigation for speculative store bypass (IA32_SPEC_CTRL)
+	rao_int                    // RAO-INT instructions
+	avx_vnni                   // AVX vector neural network instructions
+	avx512_bf16                // AVX-512 instructions for bfloat16 numbers
+	lass                       // linear address space separation
+	cmpccxadd                  // CMPccXADD instructions
+	archperfmonext             // architectural performance monitoring extended leaf (eax=23h)
+	fast_zero_rep_movsb        // fast zero-length MOVSB
+	fast_short_rep_stosb       // fast zero-length STOSB
 	fast_short_rep_cmpsb_scasb // fast zero-length CMPSB and SCASB
-	fred // flexible return and event delivery
-	lkgs // LKGS instruction
-	wrmsrns // WRMSRNS instruction
-	amx_fp16 // AMX instructions for FP16 numbers
-	hreset // HRESET instruction, IA32_HRESET_ENABLE MSR, and processor histor reset leaf (eax=20h)
-	avx_ifma // AVX IFMA instructions
-	lam // linear address masking
-	msrlist // RDMSRLIST and WRMSRLIST instructions, and the IA32_BARRIER MSR
+	fred                       // flexible return and event delivery
+	lkgs                       // LKGS instruction
+	wrmsrns                    // WRMSRNS instruction
+	amx_fp16                   // AMX instructions for FP16 numbers
+	hreset                     // HRESET instruction, IA32_HRESET_ENABLE MSR, and processor histor reset leaf (eax=20h)
+	avx_ifma                   // AVX IFMA instructions
+	lam                        // linear address masking
+	msrlist                    // RDMSRLIST and WRMSRLIST instructions, and the IA32_BARRIER MSR
 	ia32_ppin
-	avx_vnn_int8 // AVX VNNNI INT8 instructions
+	avx_vnn_int8   // AVX VNNNI INT8 instructions
 	avx_ne_convert // AVX NE CONVERT instructions
-	prefetchiti // PREFETCHIT0 and PREFETCHIT1 instructions
-	cet_sss // control-flow enforcement technology supervisor shadow stacks
-	xsaveopt // XSAVEOPT instruction
-	xsavec // XSAVEC instruction
-	xgetbv_ecx1 // XGETBV with ECX=1 support
-	xss // XSAVES and XRSTORS instructions
-	sgx1 // SGX1 leaf functions
-	sgx2 // SGX2 leaf functions
-	oss // ENCLV leaves: EINCVIRTCHILD, EDECVIRTCHILD, and ESETCONTEXT
-	encls // ENCLS leaves: ETRACKC, ERDINFO, ELDBC, ELUDC
-	enclu // ENCLU leaves: EDECSSA
+	prefetchiti    // PREFETCHIT0 and PREFETCHIT1 instructions
+	cet_sss        // control-flow enforcement technology supervisor shadow stacks
+	xsaveopt       // XSAVEOPT instruction
+	xsavec         // XSAVEC instruction
+	xgetbv_ecx1    // XGETBV with ECX=1 support
+	xss            // XSAVES and XRSTORS instructions
+	sgx1           // SGX1 leaf functions
+	sgx2           // SGX2 leaf functions
+	oss            // ENCLV leaves: EINCVIRTCHILD, EDECVIRTCHILD, and ESETCONTEXT
+	encls          // ENCLS leaves: ETRACKC, ERDINFO, ELDBC, ELUDC
+	enclu          // ENCLU leaves: EDECSSA
 	ptwrite
-	aes_kle // AES "key locker" instructions
-	aes_wide_kl // AES "wide key locker" instructions
-	kl_msrs // "key locker" MSRs
-	syscall // SYSCALL and SYSRET instructions
-	mp // multiprocessor capable
-	nx // NX bit
-	mmxext // Extended MMX
-	fxsr_opt // FXSAVE/FXRSTOR optimizations
-	pdpe1gb // gigabyte pages
-	rdtscp // RDTSCP instruction
-	lm // long mode
-	_3dnowext // extended 3DNow!
-	_3dnow // 3DNow!
-	lahf_lm // LAHF/SAHF in long mode
-	cmp_legacy // hyperthreading not valid
-	svm // secure virtual machine
-	extapic // extended APIC space
-	cr8_legacy // CR8 in 32-bit mode
-	abm // advanced bit manipulation (lzcnt and popcnt)
-	sse4a // SSE4a
-	misalignsse // misaligned SSE mode
+	aes_kle        // AES "key locker" instructions
+	aes_wide_kl    // AES "wide key locker" instructions
+	kl_msrs        // "key locker" MSRs
+	syscall        // SYSCALL and SYSRET instructions
+	mp             // multiprocessor capable
+	nx             // NX bit
+	mmxext         // Extended MMX
+	fxsr_opt       // FXSAVE/FXRSTOR optimizations
+	pdpe1gb        // gigabyte pages
+	rdtscp         // RDTSCP instruction
+	lm             // long mode
+	_3dnowext      // extended 3DNow!
+	_3dnow         // 3DNow!
+	lahf_lm        // LAHF/SAHF in long mode
+	cmp_legacy     // hyperthreading not valid
+	svm            // secure virtual machine
+	extapic        // extended APIC space
+	cr8_legacy     // CR8 in 32-bit mode
+	abm            // advanced bit manipulation (lzcnt and popcnt)
+	sse4a          // SSE4a
+	misalignsse    // misaligned SSE mode
 	_3dnowprefetch // PREFETCH and PREFETCHW instructions
-	osvw // OS visible workaround
-	ibs // instruction based sampling
-	xop // XOP instruction set
-	skinit // SKINIT/STGI instructions
-	wdt // watchdog timer
-	lwp // light weight profiling
-	fma4 // 4 operands fused multiply-add
-	tce // translation cache extension
-	nodeid_msr // NodeID MSR
-	tbm // trailing bit manipulation
-	topoext // topology extensions
-	perfctr_core // core performance counter extensions
-	perfctr_nb // NB performace counter extensions
-	dbx // data breakpoint extensions
-	perftsc // preformance TSC
-	pcx_l2i // L2I perf counter extensions
-	monitorx // MONITORX and MWAITX instructions
+	osvw           // OS visible workaround
+	ibs            // instruction based sampling
+	xop            // XOP instruction set
+	skinit         // SKINIT/STGI instructions
+	wdt            // watchdog timer
+	lwp            // light weight profiling
+	fma4           // 4 operands fused multiply-add
+	tce            // translation cache extension
+	nodeid_msr     // NodeID MSR
+	tbm            // trailing bit manipulation
+	topoext        // topology extensions
+	perfctr_core   // core performance counter extensions
+	perfctr_nb     // NB performace counter extensions
+	dbx            // data breakpoint extensions
+	perftsc        // preformance TSC
+	pcx_l2i        // L2I perf counter extensions
+	monitorx       // MONITORX and MWAITX instructions
 	addr_mask_ext
 	count
 }
@@ -272,7 +272,7 @@ pub enum ProcessorType {
 }
 
 // CPUInfo contains information about the detected system CPU.
-[noinit]
+@[noinit]
 pub struct CPUInfo {
 mut:
 	max_eax_val     u32
@@ -283,11 +283,11 @@ pub mut:
 	vendor            Vendor     // vendor
 	features          []Features // features of the CPU
 	physical_cores    int = -1 // Number of physical processor cores in your CPU. Will be -1 if undetectable
-	threads_per_core  int = 1 // Number of threads per physical core. Will be 1 if undetectable.
-	logical_cores     int        // Number of physical cores times threads that can run on each core through the use of hyperthreading. Will be 0 if undetectable.
-	family            int        // CPU family number
-	model             int        // CPU model number
-	stepping          int        // CPU stepping info
+	threads_per_core  int = 1  // Number of threads per physical core. Will be 1 if undetectable.
+	logical_cores     int // Number of physical cores times threads that can run on each core through the use of hyperthreading. Will be 0 if undetectable.
+	family            int // CPU family number
+	model             int // CPU model number
+	stepping          int // CPU stepping info
 	processor_type    ProcessorType
 	freqency          int = -1 // Clock speed measured in MHz. Will be -1 if undetectable.
 	boost_frequency   int = -1 // Max clock speed measured in MHz. Will be -1 if undetectable.
@@ -547,12 +547,12 @@ fn (mut cpu CPUInfo) leaf4() {
 		}
 
 		cpu.caches << Cache{
-			level: cache_level
-			@type: cache_type
-			size: int(cache_size_u32)
-			ways: int(ways_of_associativity_u32)
-			line_size: int(system_coherency_line_size_u32)
-			entries: int(number_of_sets_u32)
+			level:      cache_level
+			@type:      cache_type
+			size:       int(cache_size_u32)
+			ways:       int(ways_of_associativity_u32)
+			line_size:  int(system_coherency_line_size_u32)
+			entries:    int(number_of_sets_u32)
 			partitions: int(physical_line_partitions_u32)
 		}
 	}

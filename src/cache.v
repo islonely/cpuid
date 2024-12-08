@@ -13,16 +13,16 @@ pub enum CacheLevel {
 
 // CacheType is the different types of cache available.
 pub enum CacheType {
-	@none = -1
-	data = 1
+	@none       = -1
+	data        = 1
 	instruction = 2
-	unified = 3
-	tlb = 4
-	dtlb = 5
-	stlb = 6
-	prefetch = 7
+	unified     = 3
+	tlb         = 4
+	dtlb        = 5
+	stlb        = 6
+	prefetch    = 7
 	count
-	unknown = 0xff
+	unknown     = 0xff
 }
 
 // Cache represents a CPU cache.

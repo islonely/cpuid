@@ -1,8 +1,8 @@
 module cpuid
 
-[params]
+@[params]
 struct CPUIDParams {
-	eax u32  [required]
+	eax u32 @[required]
 	ecx ?u32
 }
 
